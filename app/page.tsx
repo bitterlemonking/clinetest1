@@ -1,30 +1,12 @@
-import dynamic from 'next/dynamic'
-
-export const revalidate = 0
-
-const AuthComponent = dynamic(() => import('../components/Auth'), {
-  ssr: false,
-  loading: () => <div>Loading...</div>
-})
+import ClientAuth from '../components/ClientAuth'
+import { Suspense } from 'react'
 
 export default function Home() {
   return (
-    <main className="min-h-screen flex flex-col items-center">
-      <div className="flex-1 flex flex-col gap-20 max-w-4xl px-3 py-16">
-        <div className="flex flex-col gap-16">
-          <div className="flex flex-col gap-6 text-center">
-            <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold">
-              Welcome to My Fullstack App
-            </h1>
-            <p className="text-lg sm:text-xl text-gray-600">
-              Built with Next.js, Supabase, and Vercel
-            </p>
-          </div>
-        </div>
-        <div className="auth-container">
-          <AuthComponent />
-        </div>
-      </div>
+    <main>
+      <Suspense fallback={<div>Loading...</div>}>
+        <ClientAuth />
+      </Suspense>
     </main>
   )
 }
