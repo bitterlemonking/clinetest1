@@ -1,16 +1,28 @@
 'use client'
 
-import { useState } from 'react'
-import { supabase } from '../utils/supabase'
+import { useState, useEffect } from 'react'
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 
 export default function Auth() {
   const [loading, setLoading] = useState(false)
   const [email, setEmail] = useState('')
+  const [isClient, setIsClient] = useState(false)
+  
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
+    
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+      console.error('Supabase credentials not available')
+      return
+    }
+
     try {
       setLoading(true)
+      const supabase = createClientComponentClient()
       const { error } = await supabase.auth.signInWithOtp({
         email,
         options: {
@@ -24,6 +36,10 @@ export default function Auth() {
     } finally {
       setLoading(false)
     }
+  }
+
+  if (!isClient) {
+    return null // 避免服务器端渲染
   }
 
   return (

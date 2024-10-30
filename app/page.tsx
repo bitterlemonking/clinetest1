@@ -1,4 +1,11 @@
-import Auth from '../components/Auth'
+import dynamic from 'next/dynamic'
+
+export const revalidate = 0
+
+const AuthComponent = dynamic(() => import('../components/Auth'), {
+  ssr: false,
+  loading: () => <div>Loading...</div>
+})
 
 export default function Home() {
   return (
@@ -14,7 +21,9 @@ export default function Home() {
             </p>
           </div>
         </div>
-        <Auth />
+        <div className="auth-container">
+          <AuthComponent />
+        </div>
       </div>
     </main>
   )
